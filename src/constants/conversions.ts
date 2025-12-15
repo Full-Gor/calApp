@@ -66,6 +66,76 @@ export const conversionCategories: ConversionCategory[] = [
       { id: 'nmi', name: 'Mile nautique', symbol: 'nmi', toBase: 1852 },
     ],
   },
+  {
+    id: 'precious_metals',
+    name: 'Métaux précieux',
+    icon: 'diamond-outline',
+    units: [
+      // Unités de poids pour métaux précieux (base: gramme)
+      { id: 'g_pm', name: 'Gramme', symbol: 'g', toBase: 1 },
+      { id: 'kg_pm', name: 'Kilogramme', symbol: 'kg', toBase: 1000 },
+      { id: 'oz_troy', name: 'Once troy', symbol: 'oz t', toBase: 31.1035 },
+      { id: 'lb_troy', name: 'Livre troy', symbol: 'lb t', toBase: 373.242 },
+      { id: 'dwt', name: 'Pennyweight', symbol: 'dwt', toBase: 1.55517 },
+      { id: 'grain', name: 'Grain', symbol: 'gr', toBase: 0.0648 },
+      { id: 'tola', name: 'Tola (Inde)', symbol: 'tola', toBase: 11.6638 },
+      { id: 'tael', name: 'Tael (Chine)', symbol: 'tael', toBase: 37.429 },
+      { id: 'baht_w', name: 'Baht (Thaïlande)', symbol: 'baht', toBase: 15.244 },
+      { id: 'momme', name: 'Momme (Japon)', symbol: 'momme', toBase: 3.75 },
+      { id: 'mesghal', name: 'Mesghal (Iran)', symbol: 'mithqal', toBase: 4.6875 },
+    ],
+  },
+  {
+    id: 'gemstones',
+    name: 'Pierres précieuses',
+    icon: 'sparkles-outline',
+    units: [
+      // Unités pour pierres précieuses (base: carat = 0.2g)
+      { id: 'carat', name: 'Carat', symbol: 'ct', toBase: 1 },
+      { id: 'point', name: 'Point (1/100 carat)', symbol: 'pt', toBase: 0.01 },
+      { id: 'g_gem', name: 'Gramme', symbol: 'g', toBase: 5 },
+      { id: 'mg_gem', name: 'Milligramme', symbol: 'mg', toBase: 0.005 },
+      { id: 'oz_gem', name: 'Once', symbol: 'oz', toBase: 141.747 },
+      { id: 'grain_gem', name: 'Grain', symbol: 'gr', toBase: 0.324 },
+      { id: 'ratti', name: 'Ratti (Inde)', symbol: 'ratti', toBase: 0.91 },
+      { id: 'momme_gem', name: 'Momme (perles)', symbol: 'momme', toBase: 18.75 },
+    ],
+  },
+  {
+    id: 'gold_purity',
+    name: 'Pureté Or (Carats)',
+    icon: 'medal-outline',
+    units: [
+      // Conversion entre carats d'or (base: or pur 24K = 1)
+      { id: 'k24', name: 'Or 24 carats (99.9%)', symbol: '24K', toBase: 1 },
+      { id: 'k22', name: 'Or 22 carats (91.7%)', symbol: '22K', toBase: 0.9167 },
+      { id: 'k21', name: 'Or 21 carats (87.5%)', symbol: '21K', toBase: 0.875 },
+      { id: 'k20', name: 'Or 20 carats (83.3%)', symbol: '20K', toBase: 0.8333 },
+      { id: 'k18', name: 'Or 18 carats (75%)', symbol: '18K', toBase: 0.75 },
+      { id: 'k14', name: 'Or 14 carats (58.3%)', symbol: '14K', toBase: 0.5833 },
+      { id: 'k12', name: 'Or 12 carats (50%)', symbol: '12K', toBase: 0.5 },
+      { id: 'k10', name: 'Or 10 carats (41.7%)', symbol: '10K', toBase: 0.4167 },
+      { id: 'k9', name: 'Or 9 carats (37.5%)', symbol: '9K', toBase: 0.375 },
+      { id: 'k8', name: 'Or 8 carats (33.3%)', symbol: '8K', toBase: 0.3333 },
+    ],
+  },
+  {
+    id: 'base_metals',
+    name: 'Métaux courants',
+    icon: 'construct-outline',
+    units: [
+      // Poids en kilogrammes (base: kg)
+      { id: 'kg_metal', name: 'Kilogramme', symbol: 'kg', toBase: 1 },
+      { id: 'g_metal', name: 'Gramme', symbol: 'g', toBase: 0.001 },
+      { id: 'ton_metal', name: 'Tonne', symbol: 't', toBase: 1000 },
+      { id: 'lb_metal', name: 'Livre', symbol: 'lb', toBase: 0.453592 },
+      { id: 'oz_metal', name: 'Once', symbol: 'oz', toBase: 0.0283495 },
+      { id: 'cwt', name: 'Quintal (US)', symbol: 'cwt', toBase: 45.3592 },
+      { id: 'cwt_uk', name: 'Quintal (UK)', symbol: 'cwt', toBase: 50.8023 },
+      { id: 'st_metal', name: 'Short ton (US)', symbol: 'st', toBase: 907.185 },
+      { id: 'lt_metal', name: 'Long ton (UK)', symbol: 'lt', toBase: 1016.05 },
+    ],
+  },
 ];
 
 // Taux de change approximatifs (USD comme base)
