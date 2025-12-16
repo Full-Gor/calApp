@@ -7,6 +7,7 @@ import {
   CalculatorScreen,
   ScientificScreen,
   ConversionScreen,
+  PriceCalculatorScreen,
 } from './src/screens';
 
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,9 @@ const TabNavigator: React.FC = () => {
               break;
             case 'Conversion':
               iconName = focused ? 'swap-horizontal' : 'swap-horizontal-outline';
+              break;
+            case 'Prix':
+              iconName = focused ? 'diamond' : 'diamond-outline';
               break;
             default:
               iconName = 'ellipse-outline';
@@ -56,6 +60,7 @@ const TabNavigator: React.FC = () => {
       <Tab.Screen name="Calculatrice" component={CalculatorScreen} />
       <Tab.Screen name="Scientifique" component={ScientificScreen} />
       <Tab.Screen name="Conversion" component={ConversionScreen} />
+      <Tab.Screen name="Prix" component={PriceCalculatorScreen} />
     </Tab.Navigator>
   );
 };

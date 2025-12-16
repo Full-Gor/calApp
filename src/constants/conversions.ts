@@ -69,7 +69,7 @@ export const conversionCategories: ConversionCategory[] = [
   {
     id: 'precious_metals',
     name: 'Métaux précieux',
-    icon: 'diamond-outline',
+    icon: 'cube-outline',
     units: [
       // Unités de poids pour métaux précieux (base: gramme)
       { id: 'g_pm', name: 'Gramme', symbol: 'g', toBase: 1 },
@@ -88,7 +88,7 @@ export const conversionCategories: ConversionCategory[] = [
   {
     id: 'gemstones',
     name: 'Pierres précieuses',
-    icon: 'sparkles-outline',
+    icon: 'diamond-outline',
     units: [
       // Unités pour pierres précieuses (base: carat = 0.2g)
       { id: 'carat', name: 'Carat', symbol: 'ct', toBase: 1 },
@@ -104,7 +104,7 @@ export const conversionCategories: ConversionCategory[] = [
   {
     id: 'gold_purity',
     name: 'Pureté Or (Carats)',
-    icon: 'medal-outline',
+    icon: 'star-outline',
     units: [
       // Conversion entre carats d'or (base: or pur 24K = 1)
       { id: 'k24', name: 'Or 24 carats (99.9%)', symbol: '24K', toBase: 1 },
