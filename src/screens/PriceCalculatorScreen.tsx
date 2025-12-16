@@ -14,7 +14,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
-import { materialPrices, priceCategories, MaterialPrice } from '../constants/prices';
+import { materialPrices, priceCategories, MaterialPrice, priceTypes, PriceType } from '../constants/prices';
 import { currencies } from '../constants/conversions';
 import { Currency } from '../types';
 
@@ -42,6 +42,8 @@ export const PriceCalculatorScreen: React.FC = () => {
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showWeightUnitPicker, setShowWeightUnitPicker] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+  const [showPriceTypePicker, setShowPriceTypePicker] = useState(false);
+  const [selectedPriceType, setSelectedPriceType] = useState<PriceType>('spot');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredMaterials = useMemo(() => {
@@ -54,12 +56,31 @@ export const PriceCalculatorScreen: React.FC = () => {
     return filteredMaterials.filter((m) => m.name.toLowerCase().includes(query));
   }, [filteredMaterials, searchQuery]);
 
+  // Helper function to get price based on selected type
+  const getMaterialPrice = (material: MaterialPrice, priceType: PriceType): number => {
+    switch (priceType) {
+      case 'spot':
+        return material.priceSpot;
+      case 'factory':
+        return material.priceFactory;
+      case 'retail':
+        return material.priceRetail;
+      default:
+        return material.priceSpot;
+    }
+  };
+
+  const selectedPriceTypeInfo = priceTypes.find((p) => p.id === selectedPriceType)!;
+
   const calculatedPrice = useMemo(() => {
     const weight = parseFloat(weightValue) || 0;
     const weightInGrams = weight * weightUnit.toGrams;
 
+    // Prix selon le type sélectionné
+    const materialPrice = getMaterialPrice(selectedMaterial, selectedPriceType);
+
     // Prix par gramme du matériau
-    const pricePerGram = selectedMaterial.priceUSD / selectedMaterial.unitInGrams;
+    const pricePerGram = materialPrice / selectedMaterial.unitInGrams;
 
     // Prix total en USD
     const totalUSD = weightInGrams * pricePerGram;
@@ -71,9 +92,13 @@ export const PriceCalculatorScreen: React.FC = () => {
       totalUSD,
       totalInCurrency,
       pricePerGram: pricePerGram * selectedCurrency.rate,
-      pricePerUnit: selectedMaterial.priceUSD * selectedCurrency.rate,
+      pricePerUnit: materialPrice * selectedCurrency.rate,
+      // Prix pour les trois niveaux
+      priceSpot: selectedMaterial.priceSpot * selectedCurrency.rate,
+      priceFactory: selectedMaterial.priceFactory * selectedCurrency.rate,
+      priceRetail: selectedMaterial.priceRetail * selectedCurrency.rate,
     };
-  }, [weightValue, weightUnit, selectedMaterial, selectedCurrency]);
+  }, [weightValue, weightUnit, selectedMaterial, selectedCurrency, selectedPriceType]);
 
   const handleCategorySelect = (category: typeof selectedCategory) => {
     setSelectedCategory(category);
@@ -127,6 +152,23 @@ export const PriceCalculatorScreen: React.FC = () => {
           <Ionicons name="chevron-down-outline" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
+        {/* Sélection du type de prix */}
+        <TouchableOpacity
+          style={[styles.selector, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}
+          onPress={() => setShowPriceTypePicker(true)}
+        >
+          <Ionicons name="layers-outline" size={24} color={theme.colors.primary} />
+          <View style={styles.selectorInfo}>
+            <Text style={[styles.selectorText, { color: theme.colors.text }]}>
+              {selectedPriceTypeInfo.name}
+            </Text>
+            <Text style={[styles.selectorSubtext, { color: theme.colors.textSecondary }]}>
+              {selectedPriceTypeInfo.description}
+            </Text>
+          </View>
+          <Ionicons name="chevron-down-outline" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+
         {/* Sélection du matériau */}
         <TouchableOpacity
           style={[styles.selector, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}
@@ -138,7 +180,7 @@ export const PriceCalculatorScreen: React.FC = () => {
               {selectedMaterial.name}
             </Text>
             <Text style={[styles.selectorSubtext, { color: theme.colors.textSecondary }]}>
-              {formatNumber(selectedMaterial.priceUSD * selectedCurrency.rate)} {selectedCurrency.symbol}/{selectedMaterial.unit}
+              {formatNumber(getMaterialPrice(selectedMaterial, selectedPriceType) * selectedCurrency.rate)} {selectedCurrency.symbol}/{selectedMaterial.unit}
             </Text>
           </View>
           <Ionicons name="chevron-down-outline" size={24} color={theme.colors.textSecondary} />
@@ -213,6 +255,33 @@ export const PriceCalculatorScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Comparaison des trois prix */}
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+          Comparaison des prix par {selectedMaterial.unit}
+        </Text>
+        <View style={[styles.detailsCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+          <View style={styles.detailRow}>
+            <Text style={[styles.detailLabel, { color: theme.colors.textSecondary }]}>Brut / Spot</Text>
+            <Text style={[styles.detailValue, { color: selectedPriceType === 'spot' ? theme.colors.primary : theme.colors.text }]}>
+              {formatNumber(calculatedPrice.priceSpot)} {selectedCurrency.symbol}
+            </Text>
+          </View>
+          <View style={[styles.detailDivider, { backgroundColor: theme.colors.border }]} />
+          <View style={styles.detailRow}>
+            <Text style={[styles.detailLabel, { color: theme.colors.textSecondary }]}>Usine / Taillé</Text>
+            <Text style={[styles.detailValue, { color: selectedPriceType === 'factory' ? theme.colors.primary : theme.colors.text }]}>
+              {formatNumber(calculatedPrice.priceFactory)} {selectedCurrency.symbol}
+            </Text>
+          </View>
+          <View style={[styles.detailDivider, { backgroundColor: theme.colors.border }]} />
+          <View style={styles.detailRow}>
+            <Text style={[styles.detailLabel, { color: theme.colors.textSecondary }]}>Boutique / Détail</Text>
+            <Text style={[styles.detailValue, { color: selectedPriceType === 'retail' ? theme.colors.primary : theme.colors.text }]}>
+              {formatNumber(calculatedPrice.priceRetail)} {selectedCurrency.symbol}
+            </Text>
+          </View>
+        </View>
+
         {/* Note */}
         <Text style={[styles.note, { color: theme.colors.textSecondary }]}>
           Les prix sont indicatifs et peuvent varier selon le marché, la qualité et la provenance.
@@ -242,6 +311,47 @@ export const PriceCalculatorScreen: React.FC = () => {
                 <Ionicons name={category.icon as any} size={24} color={theme.colors.primary} />
                 <Text style={[styles.modalItemText, { color: theme.colors.text }]}>{category.name}</Text>
                 {category.id === selectedCategory.id && (
+                  <Ionicons name="checkmark-outline" size={20} color={theme.colors.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Modal type de prix */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showPriceTypePicker}
+        onRequestClose={() => setShowPriceTypePicker(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowPriceTypePicker(false)}
+        >
+          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>Type de prix</Text>
+            {priceTypes.map((priceType) => (
+              <TouchableOpacity
+                key={priceType.id}
+                style={[styles.modalItem, { backgroundColor: priceType.id === selectedPriceType ? theme.colors.surfaceSecondary : 'transparent', borderColor: theme.colors.border }]}
+                onPress={() => {
+                  setSelectedPriceType(priceType.id as PriceType);
+                  setShowPriceTypePicker(false);
+                }}
+              >
+                <Ionicons
+                  name={priceType.id === 'spot' ? 'analytics-outline' : priceType.id === 'factory' ? 'construct-outline' : 'storefront-outline'}
+                  size={24}
+                  color={theme.colors.primary}
+                />
+                <View style={styles.modalItemInfo}>
+                  <Text style={[styles.modalItemText, { color: theme.colors.text }]}>{priceType.name}</Text>
+                  <Text style={[styles.modalItemSubtext, { color: theme.colors.textSecondary }]}>{priceType.description}</Text>
+                </View>
+                {priceType.id === selectedPriceType && (
                   <Ionicons name="checkmark-outline" size={20} color={theme.colors.primary} />
                 )}
               </TouchableOpacity>
@@ -287,7 +397,7 @@ export const PriceCalculatorScreen: React.FC = () => {
                   <View style={styles.modalItemInfo}>
                     <Text style={[styles.modalItemText, { color: theme.colors.text }]}>{item.name}</Text>
                     <Text style={[styles.modalItemSubtext, { color: theme.colors.textSecondary }]}>
-                      {formatNumber(item.priceUSD * selectedCurrency.rate)} {selectedCurrency.symbol}/{item.unit}
+                      {formatNumber(getMaterialPrice(item, selectedPriceType) * selectedCurrency.rate)} {selectedCurrency.symbol}/{item.unit}
                     </Text>
                   </View>
                   {item.id === selectedMaterial.id && (
@@ -396,6 +506,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
   },
   selector: {
     flexDirection: 'row',
