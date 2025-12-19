@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../contexts/ThemeContext';
 import { conversionCategories, currencies } from '../constants/conversions';
 import { ConversionUnit, Currency } from '../types';
@@ -23,6 +24,7 @@ type ConversionMode = 'units' | 'currency';
 
 export const ConversionScreen: React.FC = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const [mode, setMode] = useState<ConversionMode>('units');
   const [selectedCategory, setSelectedCategory] = useState(conversionCategories[0]);
   const [fromUnit, setFromUnit] = useState<ConversionUnit>(conversionCategories[0].units[0]);
@@ -287,7 +289,7 @@ export const ConversionScreen: React.FC = () => {
     >
       <StatusBar style="light" />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 10 }]}>
         {/* Mode Toggle */}
         <View style={[styles.modeToggle, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           <TouchableOpacity
@@ -493,7 +495,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingTop: 10,
   },
   modeToggle: {
     flexDirection: 'row',

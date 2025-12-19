@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../contexts/ThemeContext';
 import { CalcButton } from '../components/CalcButton';
 import { Display } from '../components/Display';
@@ -8,6 +9,7 @@ import { ThemeSelector } from '../components/ThemeSelector';
 
 export const CalculatorScreen: React.FC = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('0');
 
@@ -83,7 +85,7 @@ export const CalculatorScreen: React.FC = () => {
     >
       <StatusBar style="light" />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <ThemeSelector />
       </View>
 
@@ -134,7 +136,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    paddingTop: 10,
   },
   displayContainer: {
     flex: 1,

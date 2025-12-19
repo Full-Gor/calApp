@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../contexts/ThemeContext';
 import { CalcButton } from '../components/CalcButton';
 import { Display } from '../components/Display';
@@ -15,6 +16,7 @@ const { width } = Dimensions.get('window');
 
 export const ScientificScreen: React.FC = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('0');
   const [isRad, setIsRad] = useState(true);
@@ -180,7 +182,7 @@ export const ScientificScreen: React.FC = () => {
     >
       <StatusBar style="light" />
 
-      <View style={styles.displayContainer}>
+      <View style={[styles.displayContainer, { paddingTop: insets.top + 10 }]}>
         <Display expression={expression} result={result} />
       </View>
 
@@ -304,7 +306,6 @@ const styles = StyleSheet.create({
   displayContainer: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 10,
     paddingBottom: 10,
   },
   buttonScroll: {

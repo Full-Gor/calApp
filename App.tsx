@@ -34,7 +34,7 @@ const TabNavigator: React.FC = () => {
               iconName = focused ? 'swap-horizontal' : 'swap-horizontal-outline';
               break;
             case 'Prix':
-              iconName = focused ? 'diamond' : 'diamond-outline';
+              iconName = focused ? 'cash' : 'cash-outline';
               break;
             default:
               iconName = 'ellipse-outline';
