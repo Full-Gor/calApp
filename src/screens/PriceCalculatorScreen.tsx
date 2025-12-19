@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../contexts/ThemeContext';
 import { materialPrices, priceCategories, MaterialPrice, priceTypes, PriceType } from '../constants/prices';
 import { currencies } from '../constants/conversions';
@@ -31,6 +32,7 @@ const weightUnits = [
 
 export const PriceCalculatorScreen: React.FC = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState(priceCategories[0]);
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialPrice>(
     materialPrices.find((m) => m.category === 'precious_metal')!
@@ -131,7 +133,7 @@ export const PriceCalculatorScreen: React.FC = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <StatusBar style="light" />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 10 }]}>
         {/* Titre */}
         <Text style={[styles.title, { color: theme.colors.text }]}>
           Calculateur de Prix
@@ -495,7 +497,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingTop: 10,
   },
   title: {
     fontSize: 28,
